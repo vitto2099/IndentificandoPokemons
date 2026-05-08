@@ -45,12 +45,17 @@ def abrir_e_identificar():
             img_array = np.expand_dims(img_array, axis=0)
 
             predicao = model.predict(img_array, verbose=0)
-            nome = class_names[np.argmax(predicao)]
+            indice = np.argmax(predicao)
+            nome = class_names[indice]
+            confianca = predicao[0][indice] * 100
             
             lbl_nome.config(text=nome.upper())
+            lbl_confianca.config(text=f"Confiança: {confianca:.2f}%")
             lbl_info.config(text=INFO_POKEMON[nome])
-        except:
+        except Exception as e:
             lbl_nome.config(text="Erro")
+            lbl_confianca.config(text="")
+            print(f"Erro na identificação: {e}")
 
 janela = tk.Tk()
 janela.title("Pokédex")
@@ -83,7 +88,10 @@ lbl_img = tk.Label(moldura, bg="#333", width=300, height=300)
 lbl_img.pack()
 
 lbl_nome = tk.Label(container, text="AGUARDANDO", font=("Arial", 25, "bold"), bg="#CC0000", fg="#FFCC00")
-lbl_nome.pack(pady=10)
+lbl_nome.pack(pady=5)
+
+lbl_confianca = tk.Label(container, text="", font=("Arial", 14, "bold"), bg="#CC0000", fg="white")
+lbl_confianca.pack(pady=5)
 
 lbl_info = tk.Label(container, text="Selecione um arquivo", font=("Arial", 12), bg="#CC0000", fg="white", wraplength=500, justify="center")
 lbl_info.pack(pady=10)
